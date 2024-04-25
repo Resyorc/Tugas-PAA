@@ -82,6 +82,8 @@ void bf_penukaran_koin(struct Penukaran *pnkr, int n){
     free(minKoinKombinasi);
 }
 
+
+
 void bubbleSort(int arr[], int n) {
     int i, j;
     for (i = 0; i < n-1; i++) {
@@ -176,7 +178,7 @@ void swapPenjadwalan(struct Penjadwalan* a, struct Penjadwalan* b) {
 }
 
 void bf_penjadwalan(struct Penjadwalan pnjd[], int n, int idx, int currentTime) {
-    if (idx == n) {
+    if (idx == n-1) {
         int totalWaitTime = 0;
         for (int i = 1; i < n; i++) {
             totalWaitTime += pnjd[i].tunggu;
@@ -202,7 +204,7 @@ void bf_penjadwalan(struct Penjadwalan pnjd[], int n, int idx, int currentTime) 
 
 void display(int n) {
     printf("Optimal Task Order Based on Minimum Total Wait Time:\n");
-    for (int i = 0; i < ; i++) {
+    for (int i = 0; i < n; i++) {
         printf("%s\n", bestOrder[i].name);
     }
     printf("Total Minimum Wait Time: %d\n", minTunggu);
@@ -210,14 +212,12 @@ void display(int n) {
 
 void greedy_penjadwalan(struct Penjadwalan pjdw[], int length)
 {
-    // Bubble sort to 4sort tasks by duration in ascending order
     for (int i = 0; i < length - 1; i++)
     {
         for (int j = 0; j < length - i - 1; j++)
         {
             if (pjdw[j].durasi > pjdw[j + 1].durasi)
             {
-                // Swap tasks if they are out of order
                 struct Penjadwalan temp = pjdw[j];
                 pjdw[j] = pjdw[j + 1];
                 pjdw[j + 1] = temp;
@@ -231,7 +231,7 @@ void greedy_penjadwalan(struct Penjadwalan pjdw[], int length)
     {
         int waktuMulai = waktuSekarang;
         int waktuSelesai = waktuSekarang + pjdw[i].durasi;
-        int waktuTunggu = waktuMulai; // Calculate waiting time correctly
+        int waktuTunggu = waktuMulai;
         waktuSekarang = waktuSelesai;
         printf("%s\n", pjdw[i].name);
         if (i == length - 1)
@@ -268,7 +268,7 @@ int method, totalTugas;
     } while (method != 1 && method != 2);
     printf("Masukkan jumlah tugas: ");
     scanf("%d", &totalTugas);
-    struct Penjadwalan pjdw[totalTugas]; // Mendeklarasikan array struktur dengan ukuran yang cukup
+    struct Penjadwalan pjdw[totalTugas];
     printf("Masukkan nama tugas dan durasi tugas: ");
     for (int i = 0; i < totalTugas; i++)
     {
@@ -290,27 +290,26 @@ int method, totalTugas;
 
 void bf_knapsack(struct Knapsack knpk[], int n, int kapasitas) {
     int maxProfit = INT_MIN;
-    int bestCombination[n];  // Array untuk menyimpan kombinasi terbaik
+    int bestCombination[n];
 
     for (int i = 0; i < (1 << n); i++) {
         int currentWeight = 0, currentProfit = 0, currentCombination[n];
         
         for (int j = 0; j < n; j++) {
-            currentCombination[j] = 0;  // Reset array kombinasi saat ini
+            currentCombination[j] = 0;
             if (i & (1 << j)) {
                 currentWeight += knpk[j].weight;
                 currentProfit += knpk[j].profit;
-                currentCombination[j] = 1;  // Tandai sebagai bagian dari kombinasi saat ini
+                currentCombination[j] = 1;
             }
         }
         
         if (currentWeight <= kapasitas && currentProfit > maxProfit) {
             maxProfit = currentProfit;
-            memcpy(bestCombination, currentCombination, sizeof(bestCombination));  // Simpan kombinasi terbaik
+            memcpy(bestCombination, currentCombination, sizeof(bestCombination));
         }
     }
 
-    // Menampilkan hanya kombinasi terbaik
     printf("Optimal combination with maximum profit %d:\n", maxProfit);
     for (int i = 0; i < n; i++) {
         if (bestCombination[i]) {
@@ -322,17 +321,15 @@ void bf_knapsack(struct Knapsack knpk[], int n, int kapasitas) {
 int compareProfit(const void *a, const void *b) {
     struct Knapsack *knpk1 = (struct Knapsack *)a;
     struct Knapsack *knpk2 = (struct Knapsack *)b;
-    return (knpk2->profit - knpk1->profit); // Descending order by profit
+    return (knpk2->profit - knpk1->profit);
 }
 
 void greedy_knapsack_profit(struct Knapsack knpk[], int n, int kapasitas) {
-    // Mengurutkan knpk berdasarkan profit secara descending
     qsort(knpk, n, sizeof(struct Knapsack), compareProfit);
 
     int currentWeight = 0;
     int totalProfit = 0;
     
-    // Greedy approach: select knpk with the highest profit until capacity is full
     for (int i = 0; i < n; i++) {
         if (currentWeight + knpk[i].weight <= kapasitas) {
             currentWeight += knpk[i].weight;
@@ -347,18 +344,16 @@ void greedy_knapsack_profit(struct Knapsack knpk[], int n, int kapasitas) {
 int compareWeight(const void *a, const void *b) {
     struct Knapsack *item1 = (struct Knapsack *)a;
     struct Knapsack *item2 = (struct Knapsack *)b;
-    return (item1->weight - item2->weight); // Ascending order by weight
+    return (item1->weight - item2->weight);
 }
 
 void greedy_knapsack_weight(struct Knapsack knpk[], int n, int kapasitas) {
-    // Mengurutkan knpk berdasarkan weight secara ascending
     qsort(knpk, n, sizeof(struct Knapsack), compareWeight);
 
     int currentWeight = 0;
     int totalProfit = 0;
     printf("Selected knpk (greedy by lightest weight):\n");
     
-    // Greedy approach: select knpk with the lightest weight until capacity is full
     for (int i = 0; i < n; i++) {
         if (currentWeight + knpk[i].weight <= kapasitas) {
             currentWeight += knpk[i].weight;
@@ -373,26 +368,22 @@ void greedy_knapsack_weight(struct Knapsack knpk[], int n, int kapasitas) {
 int compareDensity(const void *a, const void *b) {
     struct Knapsack *item1 = (struct Knapsack *)a;
     struct Knapsack *item2 = (struct Knapsack *)b;
-    // Descending order by density
     if (item2->density > item1->density) return 1;
     if (item2->density < item1->density) return -1;
     return 0;
 }
 
 void greedy_knapsack_density(struct Knapsack knpk[], int n, int kapasitas) {
-    // Menghitung density untuk setiap item
     for (int i = 0; i < n; i++) {
         knpk[i].density = (double)knpk[i].profit / knpk[i].weight;
     }
 
-    // Mengurutkan knpk berdasarkan density secara descending
     qsort(knpk, n, sizeof(struct Knapsack), compareDensity);
 
     int currentWeight = 0;
     int totalProfit = 0;
     printf("Selected knpk (greedy by highest profit density):\n");
     
-    // Greedy approach: select knpk with the highest density until capacity is full
     for (int i = 0; i < n; i++) {
         if (currentWeight + knpk[i].weight <= kapasitas) {
             currentWeight += knpk[i].weight;
